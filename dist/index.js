@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://rad-choux-159d26.netlify.app/',
+    origin: 'https://rad-choux-159d26.netlify.app', // Remove the trailing slash
     methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 const options = {
