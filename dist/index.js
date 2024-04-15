@@ -18,15 +18,8 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: function (origin, callback) {
-        // Check if the origin is allowed
-        if (!origin || origin === 'https://rad-choux-159d26.netlify.app') {
-            callback(null, true);
-        }
-        else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    }
+    origin: 'https://rad-choux-159d26.netlify.app/',
+    methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 const options = {
     definition: {
