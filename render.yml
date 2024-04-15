@@ -1,0 +1,8 @@
+services:
+  - name: My-brrand
+    type: web
+    runtime: node
+    repo: https://github.com/Balinda21/My-brrand
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
