@@ -23,7 +23,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'https://rad-choux-159d26.netlify.app/' // Replace with your frontend domain
+  origin: '*' // Replace with your frontend domain
 }));
 
 
