@@ -12,10 +12,22 @@ import Joi from 'joi';
 import ContactModel from './models/contact.js';
 import CommentModel from './models/comments.js';
 import { checkUser } from './middeware/isAdmin.auth.js';
+import cors from 'cors';
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin: function (origin, callback) {
+        // Check if the origin is allowed
+        if (!origin || origin === 'https://rad-choux-159d26.netlify.app') {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
 const options = {
     definition: {
         openapi: "3.0.0",
