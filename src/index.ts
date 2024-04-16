@@ -12,10 +12,10 @@ import swaggerjsdoc from 'swagger-jsdoc';
 import swaggerui from 'swagger-ui-express';
 import cookieParser from 'cookie-parser';
 import Joi from 'joi';
+import cors from 'cors';
 import ContactModel, { Contact as ContactModelInterface } from './models/contact.js'; 
 import CommentModel from './models/comments.js';
 import { checkUser } from './middeware/isAdmin.auth.js';
-import cors from 'cors';
 
 dotenv.config();
 
@@ -27,9 +27,6 @@ app.use(cors({
   methods:["GET","POST","PUT","DELETE"],
   credentials: true // Add this line to enable credentials
 }));
-
-
-
 
 
 const options = {
@@ -96,7 +93,7 @@ const options = {
     },
     security: [{ bearerAuth: [] }]
   },
-  apis: ["./dist/*.js"] 
+  apis: ["./dist/*.js"] // Adjusted path to match route handler files
 };
 
 
@@ -115,6 +112,67 @@ mongoose.connect('mongodb+srv://balinda:Famillyy123@cluster0.8izzdgk.mongodb.net
     console.log('Connected to database');
   })
   .catch((error) => console.log(error));
+
+
+
+
+
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const staticPath = path.resolve(__dirname, '../../Frontend/assets');
+console.log(staticPath)
+app.use('/assets', express.static(staticPath));
+app.get('/', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/index.html');
+  res.sendFile(indexPath);
+});
+app.get('/about', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/about.html');
+  res.sendFile(indexPath);
+});
+
+
+app.get('/projecter', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/projects.html');
+  res.sendFile(indexPath);
+});
+
+app.get('/blogger', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/blogs.html');
+  res.sendFile(indexPath);
+});
+
+app.get('/contactor', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/contact.html');
+  res.sendFile(indexPath);
+});
+
+app.get('/administrator', checkAuth, (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/admindashboard.html');
+  res.sendFile(indexPath);
+});
+
+app.get('/addblog', checkAuth, (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/addblog.html');
+  res.sendFile(indexPath);
+});
+app.get('/adminqueries', checkAuth, (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/adminqueries.html');
+  res.sendFile(indexPath);
+});
+app.get('/loggin', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/login.html');
+  res.sendFile(indexPath);
+});
+app.get('/singleblog/:id', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/singleblog.html');
+  res.sendFile(indexPath);
+});
+app.get('/signup', (req, res) => {
+  const indexPath = path.resolve(__dirname, '../../Frontend/signup.html');
+  res.sendFile(indexPath);
+});
+
 
 
 declare global {
