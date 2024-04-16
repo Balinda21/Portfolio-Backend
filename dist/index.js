@@ -1,8 +1,5 @@
 import express from 'express';
-import { fileURLToPath } from 'url';
-import path from 'path';
 import mongoose from 'mongoose';
-import { checkAuth } from './middeware/user.auth.js';
 import UserModel from './models/Users.js';
 import BlogModel from './models/blogs.js';
 import bcrypt from 'bcrypt';
@@ -98,54 +95,6 @@ mongoose.connect('mongodb+srv://balinda:Famillyy123@cluster0.8izzdgk.mongodb.net
     console.log('Connected to database');
 })
     .catch((error) => console.log(error));
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const staticPath = path.resolve(__dirname, '../../Frontend/assets');
-console.log(staticPath);
-app.use('/assets', express.static(staticPath));
-app.get('/', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/index.html');
-    res.sendFile(indexPath);
-});
-app.get('/about', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/about.html');
-    res.sendFile(indexPath);
-});
-app.get('/projecter', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/projects.html');
-    res.sendFile(indexPath);
-});
-app.get('/blogger', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/blogs.html');
-    res.sendFile(indexPath);
-});
-app.get('/contactor', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/contact.html');
-    res.sendFile(indexPath);
-});
-app.get('/administrator', checkAuth, (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/admindashboard.html');
-    res.sendFile(indexPath);
-});
-app.get('/addblog', checkAuth, (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/addblog.html');
-    res.sendFile(indexPath);
-});
-app.get('/adminqueries', checkAuth, (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/adminqueries.html');
-    res.sendFile(indexPath);
-});
-app.get('/loggin', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/login.html');
-    res.sendFile(indexPath);
-});
-app.get('/singleblog/:id', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/singleblog.html');
-    res.sendFile(indexPath);
-});
-app.get('/signup', (req, res) => {
-    const indexPath = path.resolve(__dirname, '../../Frontend/signup.html');
-    res.sendFile(indexPath);
-});
 // User routes
 /**
  * @swagger
@@ -332,7 +281,7 @@ app.post('/login', async (req, res) => {
         res.cookie('user_name', userName, { maxAge: 86400000 });
         const test = req.cookies;
         // Send response
-        res.status(200).json({ user: user });
+        res.status(200).json({ user: user, token: token });
     }
     catch (error) {
         console.error(error);

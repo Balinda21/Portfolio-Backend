@@ -115,66 +115,6 @@ mongoose.connect('mongodb+srv://balinda:Famillyy123@cluster0.8izzdgk.mongodb.net
 
 
 
-
-
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const staticPath = path.resolve(__dirname, '../../Frontend/assets');
-console.log(staticPath)
-app.use('/assets', express.static(staticPath));
-app.get('/', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/index.html');
-  res.sendFile(indexPath);
-});
-app.get('/about', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/about.html');
-  res.sendFile(indexPath);
-});
-
-
-app.get('/projecter', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/projects.html');
-  res.sendFile(indexPath);
-});
-
-app.get('/blogger', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/blogs.html');
-  res.sendFile(indexPath);
-});
-
-app.get('/contactor', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/contact.html');
-  res.sendFile(indexPath);
-});
-
-app.get('/administrator', checkAuth, (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/admindashboard.html');
-  res.sendFile(indexPath);
-});
-
-app.get('/addblog', checkAuth, (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/addblog.html');
-  res.sendFile(indexPath);
-});
-app.get('/adminqueries', checkAuth, (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/adminqueries.html');
-  res.sendFile(indexPath);
-});
-app.get('/loggin', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/login.html');
-  res.sendFile(indexPath);
-});
-app.get('/singleblog/:id', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/singleblog.html');
-  res.sendFile(indexPath);
-});
-app.get('/signup', (req, res) => {
-  const indexPath = path.resolve(__dirname, '../../Frontend/signup.html');
-  res.sendFile(indexPath);
-});
-
-
-
 declare global {
   namespace Express {
     interface Request {
@@ -396,7 +336,7 @@ app.post('/login', async (req: Request, res: Response) => {
 
 
     // Send response
-    res.status(200).json({ user: user });
+    res.status(200).json({ user: user, token: token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to authenticate user' });

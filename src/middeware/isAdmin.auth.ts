@@ -7,7 +7,7 @@ dotenv.config()
 
 
 export const checkUser = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.token
+  const token = req.headers.authorization?.split(' ')[1]
   if(token) {
     jwt.verify(token, process.env.JWT_SECRET!, async(err: jwt.VerifyErrors | null, decodedinfo: any) => {
    if(err) {
