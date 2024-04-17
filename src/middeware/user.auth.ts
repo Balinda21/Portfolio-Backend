@@ -1,4 +1,3 @@
-// src/middleware/user.auth.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/Users.js';
@@ -25,27 +24,21 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
 };
 
 
-export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
+export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
   if (!token) {
     return res.redirect("back");
   }
 
-  jwt.verify(token, process.env.JWT_SECRET!, async (err: jwt.VerifyErrors | null, decodedInfo: any) => {
-    if (err) {
-      console.log(err.message);
-      return res.status(500).send("Internal Server Error");
+  try {
+    const decodedInfo: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const user = await UserModel.findById(decodedInfo.id);
+    if (!user || !user.isAdmin) {
+      return res.redirect("back")
     }
-
-    try {
-      const user = await UserModel.findById(decodedInfo.id);
-      if (!user || !user.isAdmin) {
-        return res.redirect("back")
-      }
-      next();
-    } catch (error) {
-      console.error("Error retrieving user:", error);
-      return res.status(500).send("Internal Server Error");
-    }
-  });
+    next();
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    return res.status(500).send("Internal Server Error");
+  }
 };
