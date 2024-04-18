@@ -3,7 +3,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 // Define the Comment interface
 export interface Comment extends Document {
   text: string;
-  name: string;
+  name: { type: String, default: "Anonymous" },
   postId: string; 
 }
 
@@ -11,7 +11,7 @@ export interface Comment extends Document {
 const commentSchema = new Schema<Comment>({
  // Assuming postId references a Post model
   text: { type: String, required: true },
-  name: { type: String, required: true },
+  name: { type: String }, 
   postId: { type: String, required: true } 
 });
 

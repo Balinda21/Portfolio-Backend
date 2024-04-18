@@ -843,9 +843,9 @@ app.get('/api/get/contacts', async (_req, res) => {
 app.post('/api/comments/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { text, name } = req.body;
+        const { text } = req.body;
         // Create a new comment document
-        const newComment = new CommentModel({ text, name, postId: id });
+        const newComment = new CommentModel({ text, postId: id });
         // Save the new comment to the database
         await newComment.save();
         // Send response
@@ -853,6 +853,21 @@ app.post('/api/comments/:id', async (req, res) => {
     }
     catch (error) {
         console.error('Error adding comment:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+// get comments by id
+// Assuming you're using Express
+app.get('/api/comments/:blogId', async (req, res) => {
+    try {
+        const blogId = req.params.blogId;
+        // Fetch comments associated with the specified blog ID
+        const comments = await CommentModel.find({ postId: blogId });
+        // Return the comments
+        res.status(200).json(comments);
+    }
+    catch (error) {
+        console.error('Error fetching comments:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
