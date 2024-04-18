@@ -4,6 +4,7 @@ import mongoose, { Document, Schema, Model } from 'mongoose';
 export interface Comment extends Document {
   text: string;
   name: string;
+  postId: string; 
 }
 
 // Define the schema for the Comment model
@@ -11,6 +12,7 @@ const commentSchema = new Schema<Comment>({
  // Assuming postId references a Post model
   text: { type: String, required: true },
   name: { type: String, required: true },
+  postId: { type: String, required: true } 
 });
 
 // Create the Comment model
