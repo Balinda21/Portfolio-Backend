@@ -344,7 +344,6 @@ app.post('/login', async (req: Request, res: Response) => {
 });
 
 
-
 /**
  * @swagger
  * /logout:
@@ -412,39 +411,61 @@ app.post('/logout', (req: Request, res: Response) => {
  */
 // Define Joi schema for registration fields
 const registerSchema = Joi.object({
-  name: Joi.string().required().messages({
-    'any.required': 'Name is required'
+  name: Joi.string().trim().required().messages({
+    'any.required': 'Name is required',
+    'string.empty': 'Name cannot be empty'
   }),
-  email: Joi.string().email().required().messages({
+  email: Joi.string().trim().email().required().messages({
     'any.required': 'Email is required',
+    'string.empty': 'Email cannot be empty',
     'string.email': 'Email must be a valid email address'
   }),
-  password: Joi.string().required().pattern(new RegExp('^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$'))
+  password: Joi.string().min(8).required().pattern(new RegExp('^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$'))
     .messages({
       'any.required': 'Password is required',
-      'string.pattern.base': 'Password must contain at least one letter, one number, and be at least 8 characters long'
+      'string.empty': 'Password cannot be empty',
+      'string.pattern.base': 'Password must contain at least one letter, one number, and be at least 8 characters long',
+      'string.min': 'Password must be at least 8 characters long'
     })
 });
+
+
 // register router
 app.post('/register', async (req: Request, res: Response) => {
   try {
-      
-      const { name, email, password } = req.body;
+    // Validate the request body against the Joi schema
+    const validationResult = registerSchema.validate(req.body);
+    if (validationResult.error) {
+      // If validation fails, return an error response
+      return res.status(400).json({ message: validationResult.error.details[0].message });
+    }
 
-      // Hashing password
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new UserModel({ name, email, password: hashedPassword, });
+    // Extract user details from request body
+    const { name, email, password } = req.body;
 
-      // Save the new user to the database
-      await newUser.save();
+    // Check if the email is already registered
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email is already registered' });
+    }
 
-      // Respond with the newly created user document
-      res.status(201).json(newUser);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new user document
+    const newUser = new UserModel({ name, email, password: hashedPassword });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Respond with the newly created user document
+    res.status(201).json(newUser);
   } catch (error) {
-      console.error('Error during user registration:', error);
-      res.status(500).json({ message: 'Server Error' });
+    console.error('Error during user registration:', error);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
+
 
 /**
  * @swagger
