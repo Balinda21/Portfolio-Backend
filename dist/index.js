@@ -868,5 +868,22 @@ app.get('/api/get/comments/', async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 });
+app.post('/api/blog/:id/like', async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await BlogModel.findById(postId);
+        if (!post) {
+            return res.status(404).json({ error: 'Blog post not found' });
+        }
+        // Increment likes count
+        post.likes++;
+        await post.save();
+        res.json({ likes: post.likes });
+    }
+    catch (error) {
+        console.error("Error handling like:", error);
+        res.status(500).json({ error: "An error occurred while processing your request." });
+    }
+});
 export default app;
 //# sourceMappingURL=index.js.map

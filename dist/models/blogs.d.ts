@@ -28,6 +28,7 @@ export interface blog extends Document {
     title: string;
     date: string;
     description: string;
+    likes: number;
 }
 declare const _default: mongoose.Model<blog, {}, {}, {}, mongoose.Document<unknown, {}, blog> & blog & {
     _id: mongoose.Types.ObjectId;

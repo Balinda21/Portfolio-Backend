@@ -49,3 +49,4 @@ export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
     }
   });
 };
+  
