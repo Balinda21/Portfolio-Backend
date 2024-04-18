@@ -868,6 +868,20 @@ app.get('/api/get/comments/', async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 });
+// get comments by id
+app.get('/api/comments/:blogId', async (req, res) => {
+    try {
+        const blogId = req.params.blogId;
+        // Fetch comments associated with the specified blog ID
+        const comments = await CommentModel.find({ postId: blogId });
+        // Return the comments
+        res.status(200).json(comments);
+    }
+    catch (error) {
+        console.error('Error fetching comments:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 app.post('/api/blog/:id/like', async (req, res) => {
     try {
         const postId = req.params.id;
