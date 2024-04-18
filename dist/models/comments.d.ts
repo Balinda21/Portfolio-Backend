@@ -25,11 +25,7 @@
 import { Document, Model } from 'mongoose';
 export interface Comment extends Document {
     text: string;
-    name: {
-        type: String;
-        default: "Anonymous";
-    };
-    postId: string;
+    name: string;
 }
 declare const CommentModel: Model<Comment>;
 export default CommentModel;

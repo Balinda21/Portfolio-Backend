@@ -3,8 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 const commentSchema = new Schema({
     // Assuming postId references a Post model
     text: { type: String, required: true },
-    name: { type: String },
-    postId: { type: String, required: true }
+    name: { type: String, required: true },
 });
 // Create the Comment model
 const CommentModel = mongoose.model('Comment', commentSchema);
