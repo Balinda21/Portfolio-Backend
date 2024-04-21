@@ -1069,6 +1069,48 @@ app.post('/send-email', (req, res) => {
 });
 
 
+// subscribe 
+app.post('/subscribe', async (req, res) => {
+  const { email } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // Use environment variable for Gmail address
+      pass: process.env.EMAIL_PASSWORD 
+    }
+  });
+
+  const confirmationMailOptions = {
+      from: `<${email}>`,
+      to: email,
+      subject: 'Subscription Confirmation',
+      text: 'Thank you for subscribing to our newsletter.'
+  };
+
+  try {
+      await transporter.sendMail(confirmationMailOptions);
+      console.log('Confirmation email sent to:', email);
+      res.send('Subscription successful. Please check your email for confirmation.');
+  } catch (error) {
+      console.error('Error sending confirmation email:', error);
+      res.status(500).send('An error occurred. Please try again later.');
+  }
+
+  const notificationMailOptions = {
+      from: `<${email}>`,
+      to: 'balindamoris@gmail.com',
+      subject: 'New Newsletter Subscription',
+      text: `A new user subscribed to the newsletter: ${email}`
+  };
+
+  try {
+      await transporter.sendMail(notificationMailOptions);
+      console.log('Notification email sent to admin');
+  } catch (error) {
+      console.error('Error sending notification email:', error);
+  }
+});
 
 
 
