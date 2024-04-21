@@ -16,6 +16,9 @@ import cors from 'cors';
 import ContactModel, { Contact as ContactModelInterface } from './models/contact.js'; 
 import CommentModel from './models/comments.js';
 import { checkUser } from './middeware/isAdmin.auth.js';
+import { Transporter } from 'nodemailer';
+import nodemailer from 'nodemailer';
+
 
 dotenv.config();
 
@@ -1030,6 +1033,41 @@ app.post('/api/blog/:id/like', async (req, res) => {
     res.status(500).json({ error: "An error occurred while processing your request." });
   }
 });
+
+
+
+// Route to send email
+app.post('/send-email', (req, res) => {
+  const { name, email, recipient, subject, message } = req.body;
+
+  const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+          user: "balindamoris@gmail.com", // Update with your Gmail address
+          pass: "vdli uhku shyc jthi" // Update with your app password
+      }
+  });
+
+  const mailOptions = {
+      from: `"${name}" <${email}>`,
+      to: recipient, // Update with the recipient's email address
+      subject: subject,
+      html: `<p>Message from: ${name} &lt;${email}&gt;</p><p>Message: ${message}</p>`
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.log(error);
+          res.status(500).send('Error sending email');
+      } else {
+          console.log("Email sent: " + info.response);
+          res.status(200).send('Email sent successfully');
+      }
+  });
+});
+
+
+
 
 
 export default app;
