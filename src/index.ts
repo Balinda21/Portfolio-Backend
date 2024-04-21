@@ -1043,8 +1043,8 @@ app.post('/send-email', (req, res) => {
   const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-          user: "balindamoris@gmail.com", // Update with your Gmail address
-          pass: "vdli uhku shyc jthi" // Update with your app password
+        user: process.env.EMAIL_USER, // Use environment variable for Gmail address
+        pass: process.env.EMAIL_PASSWORD 
       }
   });
 
