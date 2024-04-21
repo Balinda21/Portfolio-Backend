@@ -1038,7 +1038,7 @@ app.post('/api/blog/:id/like', async (req, res) => {
 
 // Route to send email
 app.post('/send-email', (req, res) => {
-  const { name, email, recipient, subject, message } = req.body;
+  const { name, email, subject, message } = req.body;
 
   const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -1048,9 +1048,11 @@ app.post('/send-email', (req, res) => {
       }
   });
 
+  const recipientEmail = "balindamoris@gmail.com"; // Predefined recipient email address
+
   const mailOptions = {
       from: `"${name}" <${email}>`,
-      to: recipient, // Update with the recipient's email address
+      to: recipientEmail,
       subject: subject,
       html: `<p>Message from: ${name} &lt;${email}&gt;</p><p>Message: ${message}</p>`
   };
@@ -1065,6 +1067,7 @@ app.post('/send-email', (req, res) => {
       }
   });
 });
+
 
 
 
