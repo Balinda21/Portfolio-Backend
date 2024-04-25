@@ -1333,7 +1333,7 @@ app.post('/subscribe', async (req, res) => {
 
 // edit profile
 
-app.get('/profile',  async (req: Request, res: Response) => {
+app.get('/profile/:id',  async (req: Request, res: Response) => {
   try {
       const { id } = req.params;
       const { name, email, password } = req.body; 
