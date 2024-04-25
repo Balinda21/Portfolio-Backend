@@ -19,15 +19,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://rad-choux-159d26.netlify.app',
+    origin: ['https://rad-choux-159d26.netlify.app', 'http://127.0.0.1:5501', 'https://portfolio-backend-xewv.onrender.com/'],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true // Add this line to enable credentials
+    credentials: true
 }));
 const options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "Todos API Documentation",
+            title: "Portfolio api documentation",
             version: "1.0.0",
             description: "This application consists of a basic todo API developed using Express and detailed using Swagger documentation",
             contact: {
@@ -127,6 +127,47 @@ app.get('/users', async (_req, res) => {
 });
 /**
  * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     description: Retrieve a user by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: The requested user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       '404':
+ *         description: User not found
+ *       '500':
+ *         description: Server Error
+ */
+app.get('/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Find the user by ID in the database
+        const user = await UserModel.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Send the fetched user as a JSON response
+        res.status(200).json(user);
+    }
+    catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+/**
+ * @swagger
  * /edit/users/{id}:
  *   put:
  *     summary: Update a user
@@ -156,19 +197,14 @@ app.get('/users', async (_req, res) => {
  *       500:
  *         description: Server Error
  */
-app.put('edit/users/:id', async (req, res) => {
+app.put('/edit/user/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, password } = req.body;
-        const user = await UserModel.findById(id);
+        const { name, email } = req.body;
+        const user = await UserModel.findByIdAndUpdate(id, { name, email }, { new: true });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.name = name || user.name;
-        user.email = email || user.email;
-        user.password = hashedPassword || user.password;
-        await user.save();
         res.status(200).json(user);
     }
     catch (error) {
@@ -195,7 +231,7 @@ app.put('edit/users/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-app.delete('/users/:id', async (req, res) => {
+app.delete('/delete/users/:id', async (req, res) => {
     try {
         const { id } = req.params;
         await UserModel.findByIdAndDelete(id);
@@ -496,6 +532,35 @@ app.get('/api/get/blogs', async (_req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 });
+// edit 
+app.post('/editProfile'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { username, email, password } = req.body;
+        // Find user by ID using the User model
+        const user = await UserModel.findById(id);
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+        else {
+            // Update user information
+            user.name = username || user.name;
+            user.email = email || user.email;
+            // If password is provided, update it
+            if (password) {
+                const salt = await bcrypt.genSalt();
+                const hashPassword = await bcrypt.hash(password, salt);
+                user.password = hashPassword;
+            }
+            await user.save(); // Save the updated user
+            return res.status(200).json({ msg: 'User edited successfully', user });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
 /**
  * @swagger
  * /api/singleblogs/{id}:
