@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: ['https://rad-choux-159d26.netlify.app', 'http://127.0.0.1:5501', 'https://portfolio-backend-xewv.onrender.com/'],
+    origin: ['https://rad-choux-159d26.netlify.app', 'http://127.0.0.1:5501', 'https://portfolio-backend-xewv.onrender.com'],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
@@ -29,7 +29,7 @@ const options = {
         info: {
             title: "Portfolio api documentation",
             version: "1.0.0",
-            description: "This application consists of a basic todo API developed using Express and detailed using Swagger documentation",
+            description: "This application consists of a portfolio API developed using Express and detailed using Swagger documentation",
             contact: {
                 name: "Maurice Kwizera Balinda",
                 email: "balindamoris@gmail.com"
