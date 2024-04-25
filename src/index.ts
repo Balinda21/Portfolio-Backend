@@ -1036,8 +1036,6 @@ app.get('/api/get/contacts', async (_req: Request, res: Response) => {
  */
 
 
-// Define endpoint to add a new comment
-// Define endpoint to add a new comment
 app.post('/api/comments',  async  (req: Request, res: Response) => {
   try {
     const { text, name } = req.body;
@@ -1070,22 +1068,96 @@ app.get('/api/get/comments/', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/comments/{blogId}:
+ *   get:
+ *     summary: Get comments by ID
+ *     description: Retrieve comments for a specific blog post by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: blogId
+ *         required: true
+ *         description: ID of the blog post
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: List of comments for the specified post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ *       '500':
+ *         description: Server error
+ *
+ * components:
+ *   schemas:
+ *     Comment:
+ *       type: object
+ *       properties:
+ *         text:
+ *           type: string
+ */
 
 // get comments by id
 app.get('/api/comments/:blogId', async (req, res) => {
   try {
     const blogId = req.params.blogId;
-
-    // Fetch comments associated with the specified blog ID
     const comments = await CommentModel.find({ postId: blogId });
-
-    // Return the comments
     res.status(200).json(comments);
   } catch (error) {
     console.error('Error fetching comments:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+/**
+ * @swagger
+ * /api/blog/{id}/like:
+ *   post:
+ *     summary: Like a blog post
+ *     description: Like a specific blog post by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the blog post
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Blog post liked successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 likes:
+ *                   type: number
+ *                   description: The number of likes after the like action
+ *       '404':
+ *         description: Blog post not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating the blog post was not found
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: Error message indicating a server error occurred
+ */
 
 
 app.post('/api/blog/:id/like', async (req, res) => {
@@ -1108,6 +1180,48 @@ app.post('/api/blog/:id/like', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /send-email:
+ *   post:
+ *     summary: Send email
+ *     description: Send an email with the provided details.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Sender's name
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Sender's email address
+ *               subject:
+ *                 type: string
+ *                 description: Email subject
+ *               message:
+ *                 type: string
+ *                 description: Email message
+ *     responses:
+ *       '200':
+ *         description: Email sent successfully
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Email sent successfully
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Error sending email
+ */
 
 
 // Route to send email
@@ -1141,6 +1255,41 @@ app.post('/send-email', (req, res) => {
       }
   });
 });
+
+
+/**
+ * @swagger
+ * /subscribe:
+ *   post:
+ *     summary: Subscribe to newsletter
+ *     description: Subscribe to the newsletter using the provided email address.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email address for subscription
+ *     responses:
+ *       '200':
+ *         description: Subscription successful
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: Subscription successful. Please check your email for confirmation.
+ *       '500':
+ *         description: Server error
+ *         content:
+ *           text/plain:
+ *             schema:
+ *               type: string
+ *               example: An error occurred. Please try again later.
+ */
 
 
 // subscribe 
