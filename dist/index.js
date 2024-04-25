@@ -414,16 +414,12 @@ app.post('/register', async (req, res) => {
             // If validation fails, return an error response
             return res.status(400).json({ message: validationResult.error.details[0].message });
         }
-        // Extract user details from request body
         const { name, email, password } = req.body;
-        // Check if the email is already registered
         const existingUser = await UserModel.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'Email is already registered' });
         }
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
-        // Create a new user document
         const newUser = new UserModel({ name, email, password: hashedPassword });
         // Save the new user to the database
         await newUser.save();
@@ -1196,6 +1192,36 @@ app.post('/subscribe', async (req, res) => {
     }
     catch (error) {
         console.error('Error sending notification email:', error);
+    }
+});
+// edit profile
+app.get('/profile', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password } = req.body;
+        const user = await UserModel.findById(id);
+        if (!user) {
+            return res.status(400).json('There is no user');
+        }
+        else {
+            user.name = name || user.name;
+            user.email = email || user.email;
+            if (password !== null && password !== undefined && password.trim() !== '') {
+                const salt = await bcrypt.genSalt();
+                const hashpassword = await bcrypt.hash(password, salt);
+                user.password = hashpassword;
+                console.log(user.password, { "changed password": password });
+            }
+            else {
+                user.password = user.password;
+            }
+            await user.save();
+            return res.status(200).json({ msg: 'Edited successfully' });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 export default app;
